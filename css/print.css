@@ -1,0 +1,21 @@
+#header, #navi, #footer, h1, hr, #printFooter, .icon, a{
+	display:	none;
+}
+
+th,td{
+	text-align:	left;
+	padding-right:10px;
+}
+
+.betr, .essen, .ferien{
+	text-align:center;
+}
+table{
+	border:1px solid black;
+}
+.row1 {
+	background-color:#E4E4E4;
+}
+.row0 {
+	background-color:white;
+}
