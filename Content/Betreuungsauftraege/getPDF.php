@@ -160,11 +160,12 @@
 	$tel_nr 	.= ($data->e_fon_dienst)? ", ". $data->e_fon_dienst:"";
 	
 	$pdf->Cell(5,10,"",0,0,'L');
-	$pdf->Cell(155,10,"$tel_nr",0,0,'L');	
-	$pdf->Ln(5);
-	
+	$pdf->Cell(155,10,"$tel_nr",0,0,'L');
+		
+	/*$pdf->Ln(5);	
 	$pdf->Cell(45,10,'Mobil:',0,0,'L');	
-	$pdf->Cell(155,10,"$data->e_fon_privat",0,0,'L');
+	$pdf->Cell(155,10,"$data->e_fon_privat",0,0,'L');*/
+	
 	$pdf->Ln(8);
 	
 // ------ 2. 	Erziehungsberechtigte
@@ -614,9 +615,20 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 	
 		$pdf->Ln(15);
 		
-		$pdf->MultiCell(180,5,'Ich werde den Abschlag von September bis Juni auf das Konto des Jugend- und Familiendienstes e. V., Nr 70 540, BLZ 403 500 05 bei der Stadtsparkasse Rheine überweisen. Als Verwendungszweck ist die folgende Schüler-Nummer anzugeben: KIJU-'.$school->schul_kuerzel.'-'.$data->s_id.'.',0,'L');
+		$pdf->MultiCell(180,5,'Ich werde den Abschlag von September bis Juni auf das nachfolgend genannte Konto des Jugend- und Familiendienstes e. V. überweisen. Als Verwendungszweck ist die folgende Schüler-Nummer anzugeben: KIJU-'.$school->schul_kuerzel.'-'.$data->s_id.'.',0,'L');
+		$pdf->Ln(5);
+
+		$pdf->Cell(20,5,'BIC:',0,0,'L');
+		$pdf->Cell(150,5,"WELADED1RHN",0,0,'L');
+		$pdf->Ln(5);
+
+		$pdf->Cell(20,5,'IBAN:',0,0,'L');
+		$pdf->Cell(150,5,"DE66 403500050000070540",0,0,'L');
+		$pdf->Ln(5);		
 		
-		
+		$pdf->Cell(20,5,'Institut:',0,0,'L');
+		$pdf->Cell(150,5,"Stadtsparkasse Rheine",0,0,'L');	
+		$pdf->Ln(15);	
 	}
 	elseif($data->b_methode == "sonstige"){
 	
