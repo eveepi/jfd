@@ -11,19 +11,15 @@
 	include("../../functions.php");
 	
 	$user = new CUser();
-    
 	$sql = new Sql;
-	
 			
 	$_SESSION['schule'] = isset($_SESSION['schule']) ? $_SESSION['schule'] : $user->getSchule();
 	
 	$logoPath = "../../img/pdf_logo.png";
 	$logoWidth = 38;
 	
-  $data = $sql->getUserData($_SESSION['pdf_sid']);
-
+	$data = $sql->getUserData($_SESSION['pdf_sid']);
 	$school = $sql->getSchoolData($data->ba_schul_ID);
-	
 	$traeger = $school->traeger;
 	
 	/* Kündigungsgründe konfigurieren */
@@ -65,7 +61,7 @@
 	//echo "debug:" . $data->s_name;
 	
 	// beiträge ausrechnen, betreuung,ferien und essen 
-	$summeBe = calcPay($data->ba_jahreseinkommen,$data->ba_ferien,$data->ba_geschwister); // summe betreuung
+	$summeBe = calcPay($data->ba_jahreseinkommen, $data->ba_ferien, $data->ba_geschwister); // summe betreuung
 
 	$summeEssen = calcEssen($data->ba_essenstage, $data->ba_zuschuss_essen, $data->ba_sozial, $data->ba_sozialleistungen);
 	$abschlag = $summeBe / 10; // jahresbeitrag wird auf 10 abschläge verteilt
@@ -76,11 +72,9 @@
 					  WHERE schul_id=$_SESSION[schul_id]
 					  ORDER BY v_verdienst ASC,`from` ASC";
 	
-	
 	$verdienst_result = mysql_query($sql_verdienst);
 	
 	$pdf = new FPDF();
-	
 	/*
 	 * Erste Seite
 	 */
@@ -125,7 +119,7 @@
 	
 	$pdf->SetFont('Arial','',10);
 	$pdf->Ln(5);
-	$pdf->Cell(180,1,"in der ".utf8_decode($school->schul_name)." nutzen",0,0,'L');
+	$pdf->Cell(180,1,"in der ".utf8_decode($school->schul_name)." nutzen.",0,0,'L');
 	$pdf->Ln(5);
 		
 	$tmp = explode("-",$data->ba_anfang);
@@ -134,7 +128,7 @@
 	$tmp = explode("-",$data->ba_ende);
 	$endYear = $tmp[2] . "." . $tmp[1] . "." . $tmp[0];
 	
-	//$pdf->MultiCell(180,4,"Diese Anmeldung ist für das Schuljahr $thisYear/$nextYear verbindlich und verlängert sich jeweils um ein weiteres Schuljahr, falls nicht 3 Monate vor Schuljahresende eine Kündigung erfolgt.",0,'L');
+	//$pdf->MultiCell(180,4,"Diese Anmeldung ist für das Schuljahr $thisYear/$nextYear verbindlich.",0,'L');
 	$pdf->MultiCell(180,4,"Diese Anmeldung ist vom $startYear bis zum $endYear verbindlich.",0,'L');
 // ------ 1. 	Erziehungsberechtigte
 	$pdf->SetFont('Arial','U',10);
@@ -142,7 +136,7 @@
 	$pdf->SetFont('Arial','',10);
 	$pdf->Ln(8);
 	
-	$pdf->Cell(50,10,'Name,Vorname:',0,0,'L');
+	$pdf->Cell(50,10,'Name, Vorname:',0,0,'L');
 	$pdf->Cell(155,10,utf8_decode("$data->e_name, $data->e_vorname"),0,0,'L');
 	$pdf->Ln(5);
 	$pdf->Cell(50,10,'Straße:',0,0,'L');
@@ -174,7 +168,7 @@
 //		$pdf->Cell(180,10,'2. Erziehungsberechtigte',0,0,'C');
 //		$pdf->Ln(10);
 		
-		$pdf->Cell(50,10,'Name,Vorname:',0,0,'L');
+		$pdf->Cell(50,10,'Name, Vorname:',0,0,'L');
 		$pdf->Cell(155,10,utf8_decode("$data->e_name2, $data->e_vorname2"),0,0,'L');
 		$pdf->Ln(5);
 		$pdf->Cell(45,10,'Tel. (dienstl.):',0,0,'L');
@@ -191,7 +185,7 @@
 	$pdf->SetFont('Arial','',10);
 	$pdf->Ln(10);
 	
-	$pdf->Cell(50,10,'Name,Vorname:',0,0,'L');
+	$pdf->Cell(50,10,'Name, Vorname:',0,0,'L');
 	$pdf->Cell(155,10,utf8_decode("$data->s_name, $data->s_vorname"),0,0,'L');
 	$pdf->Ln(5);
 	$pdf->Cell(50,10,'Straße:',0,0,'L');
@@ -204,7 +198,7 @@
 	$pdf->Cell(50,10,'PLZ, Ort:',0,0,'L');
 	$pdf->Cell(155,10,utf8_decode("$ort->o_plz, $ort->o_ort"),0,0,'L'); // <== PLZ + ORT!
   
-  $pdf->Ln(5);
+  	$pdf->Ln(5);
 	$pdf->Cell(50,10,'Geburtsdatum:',0,0,'L');
 	$pdf->Cell(155,10,utf8_decode($data->geburtsdatum),0,0,'L');
 	
@@ -214,6 +208,10 @@
 		$pdf->Cell(155,10,utf8_decode($data->k_bezeichnung),0,0,'L');
 	}
 	
+	$pdf->Ln(5);
+	$pdf->Cell(50,10,'KIJU-Nr:',0,0,'L');
+	$pdf->Cell(155,10,'KIJU-'.$school->schul_kuerzel.'-'.$data->s_id,0,0,'L');	
+
 	$pdf->Ln(10);
 	
 // ------ Tabelle mit Beiträgen
@@ -287,7 +285,7 @@
 			$pdf->Cell(30,5, number_format($row->beitrag + 12 , 2, ',', ' ') . ' € * ',1,0,"R");
 			
 			// bis
-			if($row->from==0){
+			if($row->from == 0){
 				// Kächstchen
 				if($data->ba_jahreseinkommen <= $row->v_verdienst && !$x){
 					$pdf->Ln(1);
@@ -383,19 +381,19 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 	
 	$pdf->Ln(20);
 	
-	$pdf->MultiCell(180,5,"Die Anmeldung ist für das jeweilige Schuljahr verbindlich und verlängert sich jeweils um ein weiteres Schuljahr, falls nicht 3 Monate vor Schuljahresende gekündigt wird. Eine vorzeitige Kündigung ist ausgeschlossen, es sei denn, es liegt einer der folgenden Gründe vor:",0,'L');
+	$pdf->MultiCell(180,5,"Die Anmeldung ist für das jeweilige Schuljahr verbindlich. Eine vorzeitige Kündigung ist ausgeschlossen, es sei denn, es liegt einer der folgenden Gründe vor:",0,'L');
 	
 	$pdf->Ln(5);
 	
-	if($arbeitsplatz){
-		$pdf->MultiCell(180,5,'-		Verlust des Arbeitsplatzes',0,'L');	
-	} if($einkommensreduzierung){
-	$pdf->MultiCell(180,5,'-		Reduzierung des monatlichen Einkommens um mindestens 20 % gegenüber dem bei Anmeldung des Kindes erzielten Einkommens',0,'L');
-	} if($umzug){
-		$pdf->MultiCell(180,5,'-		bei Umzug der Familie und damit verbundenen Schulwechsels des Kindes',0,'L');
-	} if($haerte){
-		$pdf->MultiCell(180,5,'-		wenn Anzeichen erkennbar sind, dass eine weitere Teilnahme am Nachmittagsangebot eine unzumutbare Härte für das Kind darstellt.',0,'L');
-	}
+	if($arbeitsplatz)
+		$pdf->MultiCell(180,5,'- Verlust des Arbeitsplatzes',0,'L');	
+	if($einkommensreduzierung)
+		$pdf->MultiCell(180,5,'- Reduzierung des monatlichen Einkommens um mindestens 20 % gegenüber dem bei Anmeldung des Kindes erzielten Einkommens',0,'L');
+	if($umzug)
+		$pdf->MultiCell(180,5,'- bei Umzug der Familie und damit verbundenem Schulwechsels des Kindes',0,'L');
+	if($haerte)
+		$pdf->MultiCell(180,5,'- wenn Anzeichen erkennbar sind, dass eine weitere Teilnahme am Nachmittagsangebot eine unzumutbare Härte für das Kind darstellt.',0,'L');
+	
 	$pdf->Ln(5);
 	
 	
@@ -606,6 +604,27 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 		$pdf->Ln(10);
 
 		$pdf->MultiCell(180,5,'mittels Lastschrift einzuziehen. Wenn mein Konto die erforderliche Deckung nicht aufweist, besteht seitens des kontoführenden Kreditinstituts keine Verpflichtung zur Einlösung.',0,'L');	
+	}elseif($data->b_methode == "sepa"){
+	
+		$pdf->Cell(180,5,'Einzugsermächtigung',0,0,'C');
+	
+		$pdf->SetFont('Arial','',10);
+	
+		$pdf->Ln(15);
+		
+		$pdf->MultiCell(180,5,'Hiermit ermächtige ich den von der '.utf8_decode($traeger).' beauftragten Jugend- und Familiendienst e.V. widerruflich, die von mir zu entrichtenden Zahlungen wegen der Kosten für die Teilnahme an der "Offenen Ganztagsschule" bei Fälligkeit zu Lasten meines Kontos:',0,'L');
+		
+		$pdf->Ln(5);
+		
+		$pdf->Cell(180,5,"IBAN:  $data->b_iban",0,0,'L');
+		$pdf->Ln(5);
+		$pdf->Cell(180,5,"BIC: $data->b_bic",0,0,'L');
+		$pdf->Ln(5);
+		$pdf->Cell(180,5, utf8_decode("Kontoinhaber: $data->b_holder"),0,0,'L');
+		
+		$pdf->Ln(10);
+
+		$pdf->MultiCell(180,5,'mittels Lastschrift einzuziehen. Wenn mein Konto die erforderliche Deckung nicht aufweist, besteht seitens des kontoführenden Kreditinstituts keine Verpflichtung zur Einlösung.',0,'L');	
 	}
 	elseif($data->b_methode == "ueberweisung"){
 	
@@ -623,12 +642,30 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 		$pdf->Ln(5);
 
 		$pdf->Cell(20,5,'IBAN:',0,0,'L');
-		$pdf->Cell(150,5,"DE66 403500050000070540",0,0,'L');
+		$pdf->Cell(150,5,"DE66 4035 0005 0000 0705 40",0,0,'L');
 		$pdf->Ln(5);		
 		
 		$pdf->Cell(20,5,'Institut:',0,0,'L');
 		$pdf->Cell(150,5,"Stadtsparkasse Rheine",0,0,'L');	
 		$pdf->Ln(15);	
+		
+		//TODO: Prüfen bei welchen Schulen dies angezeigt werden soll!
+		if(1){
+			$pdf->MultiCell(180,5,'Die Abschläge für das Mittagessen überweisen Sie bitte unter Angabe des Verwendungszwecks "KIJU-'.$school->schul_kuerzel.'-'.$data->s_id.'" auf folgendes Konto:',0,'L');
+			$pdf->Ln(5);
+	
+			$pdf->Cell(20,5,'BIC:',0,0,'L');
+			$pdf->Cell(150,5,"WELADED1RHN",0,0,'L');
+			$pdf->Ln(5);
+	
+			$pdf->Cell(20,5,'IBAN:',0,0,'L');
+			$pdf->Cell(150,5,"DE49 4035 0005 0000 0500 88",0,0,'L');
+			$pdf->Ln(5);		
+			
+			$pdf->Cell(20,5,'Institut:',0,0,'L');
+			$pdf->Cell(150,5,"Stadtsparkasse Rheine",0,0,'L');	
+			$pdf->Ln(15);	
+		}	
 	}
 	elseif($data->b_methode == "sonstige"){
 	
@@ -643,7 +680,6 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 		$pdf->Ln(5);
 		
 		$pdf->MultiCell(180,5,utf8_decode($data->b_sonstiges),0,'L');
-		
 	}
 	
 	$pdf->Ln(5);
@@ -654,19 +690,16 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 	$pdf->Cell(70,10,'    __________________________________',0,0,'L');
 
 	$pdf->Ln(5);
-	$pdf->Cell(70,10,'(Ort,Datum)',0,0,'L');
+	$pdf->Cell(70,10,'(Ort, Datum)',0,0,'L');
 	$pdf->Cell(16,2,' 		',0,"L");	// Abstand
 	$pdf->Cell(85,10,'    (Unterschrift)',0,0,'L');
-	
-	
-	
 	
 	/*
 	* 4. Seite
 	*/
 	// 4. seite nur ausgeben wenn auch gegessen wird
 
-	if($essen_flag && 0){  //Muss überarbeitet werden, ist veraltet
+	if($essen_flag){  //Muss überarbeitet werden, ist veraltet
 		$pdf->AddPage(); 
 		$pdf->SetMargins(20,20);
 		
@@ -687,47 +720,39 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 		
 		$pdf->SetFont('Arial','',10);
 		
-		$pdf->Cell(70,5,'Liebe Eltern/Erziehungsberechtigten!',0,0,'L');
+		$pdf->Cell(70,5,'Liebe Eltern/Erziehungsberechtigten,',0,0,'L');
 		
 		$pdf->Ln(10);
-		
-		$now 	= date("Y");
-		$next	=  date("Y") + 1;
-		
-		$pdf->MultiCell(180,5,"Nachstehend geben wir Ihnen noch einige kurze Informationen, die die Gemeinschaftsverpflegung für das Schuljahr $now/$next betreffen:",0,'L');
-		
-		$pdf->Ln(10);
-		
-		$pdf->MultiCell(180,5,"1. Für ein Mittagessen fallen Kosten in Höhe von ".number_format($school->essenspreis, 2, ",", ".")." €/Essen an.",0,'L');
+		$pdf->MultiCell(180,5,"nachstehend geben wir Ihnen noch einige kurze Informationen, die die Gemeinschaftsverpflegung betreffen:",0,'L');
 		
 		$pdf->Ln(5);
-		
-		$pdf->MultiCell(180,5,"3. Barzahlung für den Monat August ist direkt zum Anfang des Schuljahres in der Gruppe zu leisten.",0,'L');
-		
-		$pdf->Ln(5);
-		
-		$pdf->MultiCell(180,5,"4. Ab September erfolgt ein Einzug/Überweisung bzw. Barzahlung",0,'L');
+		$pdf->MultiCell(180,5,"1.) Der Essenspreis beträgt pro Mittagessen momentan ".number_format($school->essenspreis, 2, ",", ".")." €.",0,'L');
 		
 		$pdf->Ln(5);
-		
-		$pdf->MultiCell(180,5,"5. Bei einem Jahresbruttoeinkommen das Beitragsgruppe 1 bzw. bei dem Erhalt von ALG 2 oder bei Vorlage einer Lehrbuchbefreiung in der Schule beträgt der monatliche Abschlag 20,00 €.",0,'L');
-		
-		$pdf->Ln(5);
-		
-		$pdf->MultiCell(180,5,"6. Bei Rückbuchungen bzw. nicht pünktlicher Zahlung erfolgt ein sofortiger Ausschluss vom Essen.",0,'L');
+		$pdf->MultiCell(180,5,"2.) Den zu überweisenden monatlichen Beitrag hierfür entnehmen Sie bitte dem Betreuungsantrag.",0,'L');
 		
 		$pdf->Ln(5);
-		
-		$pdf->MultiCell(180,5,"7. Entschuldigte Fehltage werden am Schuljahresende verechnet.",0,'L');
+		$pdf->MultiCell(180,5,"3.) Bitte überweisen Sie pro Kind auf folgendes Konto bei der Stadtsparkasse Rheine:",0,'L');
 		
 		$pdf->Ln(5);
+		$pdf->MultiCell(180,5,"IBAN: DE49 4035 0005 0000 0500 88               BIC: WELADED1RHN",0,'L');
+				
+		$pdf->Ln(5);
+		$pdf->MultiCell(180,5,"4.) Als Verwendungszweck geben Sie bitte unbedingt, die im Antrag angegebene  KIJU-Nr. (KIJU-$school->schul_kuerzel-$data->s_id), sowie den Nachnamen und direkt anschließend den Vornamen Ihres Kindes an.",0,'L');
 		
-		$pdf->MultiCell(180,5,"8. Die Ferien wurden bei Erechnung der monatlichen Abschläge berücksichtigt.",0,'L');
+		$pdf->Ln(5);
+		$pdf->MultiCell(180,5,"5.) Wir empfehlen Ihnen, falls möglich, pro Kind einen Dauerauftrag einzurichten, um zu vermeiden, dass, falls nicht genügend Guthaben auf dem Konto Ihres Kindes ist, Ihr Kind nicht an der Gemeinschaftsverpflegung teilnehmen kann.",0,'L');
 		
-		$pdf->Ln(10);
+		$pdf->Ln(5);
+		$pdf->MultiCell(180,5,"6.) Bei Krankheit oder Unterrichtsausfall können Sie Ihr Kind täglich bis 10.00 Uhr vom Essen abmelden. Jedes abgemeldete Essen wird natürlich nicht berechnet.",0,'L');
 		
-		$pdf->MultiCell(180,5,"Bei evtl. Rückfragen wenden Sie sich bitte an die jfd-Verwaltung oder an unsere Schulbetreuerinnen.",0,'L');
-	
+		$pdf->Ln(5);
+		$pdf->MultiCell(180,5,"Bei Rückfragen wenden Sie sich bitte an uns. Sie erreichen uns unter der Tel.-Nr. des Service-Büros:",0,'L');
+		$pdf->Ln(5);
+		$pdf->MultiCell(180,5,"Servicebüro des jfd",0,'L');
+		$pdf->MultiCell(180,5,"05971-91448-19",0,'L');
+		$pdf->MultiCell(180,5,"Schleupestraße 13",0,'L');
+		$pdf->MultiCell(180,5,"48431 Rheine",0,'L');		
 	}
 	
 	/*
@@ -769,6 +794,9 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 		$pdf->Cell(50,10,'Schule:',0,0,'L');
 		$pdf->Cell(155,10,utf8_decode($school->schul_name) ,0,0,'L');
 		
+		$pdf->Cell(50,10,'Schüler-Nr:',0,0,'L');
+		$pdf->Cell(155,10,'KIJU-'.$school->schul_kuerzel.'-'.$data->s_id,0,0,'L');
+		
 		$pdf->Ln(20);
 		
 		$pdf->SetFont('Arial','B',11);
@@ -779,7 +807,7 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 		
 		$pdf->MultiCell(155,
 						5,
-						"Mein Kind $data->s_vorname $data->s_name besucht den offenen Ganztag der oben genannten Schule und erhält ein Mittagessen. Es entstehen Kosten in Höhe von 20,00 € monatlich.",
+						"Mein Kind ".utf8_decode("$data->s_vorname $data->s_name")." besucht den offenen Ganztag der oben genannten Schule und erhält ein Mittagessen. Es entstehen Kosten in Höhe von 20,00 € monatlich.",
 						0,
 						'L'
 		);

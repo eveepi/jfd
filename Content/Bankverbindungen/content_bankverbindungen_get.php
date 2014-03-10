@@ -94,6 +94,45 @@ $(document).ready(function () {
 				}
 				fwrite($file, $jahresrate / 10 + $essensbetrag."€;\n");
 			}
+		}elseif($_GET['b']=="sepa"){
+		
+			echo "<h2>SEPA-Lastschrift</h2>";
+		
+		    $sql ="SELECT * FROM $tbl_bankverbindungen[tbl], $tbl_betreuungsauftraege[tbl], $tbl_erziehungsberechtigte[tbl], $tbl_schueler[tbl]
+				   WHERE $tbl_bankverbindungen[methode] = '$_GET[b]'
+				   AND $tbl_betreuungsauftraege[schul_id]  = $_SESSION[schul_id]
+				   AND $tbl_bankverbindungen[id] = $tbl_betreuungsauftraege[bankverbindungs_id]
+				   AND $tbl_schueler[id] = $tbl_betreuungsauftraege[schueler_id]
+				   AND $tbl_schueler[e_id] = $tbl_erziehungsberechtigte[id]
+				   ";
+			$result = mysql_query($sql);
+
+			fwrite($file, $school[$tbl_schulen['name']].";Lastschrift;\n");
+			fwrite($file, "Schüler Vorname;Schüler Nachname;Schüler-ID;Kontoinhaber;IBAN;BIC;Jahresrate Betreuung;Ferienbetreuung;Jahresrate Essen;Einbehalt von Sozialhilfe?;Rate;\n");
+			
+			while($row = mysql_fetch_assoc($result)){
+				fwrite($file, $row[$tbl_schueler['vorname']].";");
+				fwrite($file, $row[$tbl_schueler['name']].";");
+				fwrite($file, $row[$tbl_betreuungsauftraege['schueler_id']].";");	
+				fwrite($file, $row[$tbl_bankverbindungen['holder']].";");
+				fwrite($file, $row[$tbl_bankverbindungen['iban']].";");
+				fwrite($file, $row[$tbl_bankverbindungen['bic']].";");
+				$jahresrate = calcPay($row[$tbl_betreuungsauftraege['jahreseinkommen']],$row[$tbl_betreuungsauftraege['ferien']],$row[$tbl_betreuungsauftraege['geschwister']]);
+				$essensbetrag = calcEssen($row[$tbl_betreuungsauftraege['essenstage']],$row[$tbl_betreuungsauftraege['jahreseinkommen']], $row[$tbl_betreuungsauftraege['ba_zuschuss']], $row[$tbl_betreuungsauftraege['ba_sozial']]);
+				fwrite($file, $jahresrate."€;");
+				if($row[$tbl_betreuungsauftraege['ferien']]){
+					fwrite($file, "ja;");
+				}else{
+					fwrite($file, ";");
+				}
+				fwrite($file, 10 * $essensbetrag."€;");
+				if (checkEinbehalt($row[$tbl_betreuungsauftraege['essenstage']],$row[$tbl_betreuungsauftraege['jahreseinkommen']], $row[$tbl_betreuungsauftraege['ba_zuschuss']], $row[$tbl_betreuungsauftraege['ba_sozial']])){
+					fwrite($file, "ja;");
+				}else{
+					fwrite($file, ";");
+				}
+				fwrite($file, $jahresrate / 10 + $essensbetrag."€;\n");
+			}
 		} elseif ($_GET['b']=="ueberweisung"){
 			
 			echo "<h2>Überweisung</h2>";

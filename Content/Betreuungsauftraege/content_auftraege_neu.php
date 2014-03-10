@@ -30,7 +30,6 @@
 			$_SESSION['geschwister'] 	=  $_POST['geschwister'];
 			$_SESSION['kinder'] 		=  $_POST['kinder'];
 			
-			
 			$_SESSION['einkommens2'] 	=  $_POST['einkommens2'];
 			$_SESSION['einkommens'] 	=  $_POST['einkommens'];
 			
@@ -49,6 +48,9 @@
 			$_SESSION['bank_blz'] 		=  $_POST['bank_blz'];
 			$_SESSION['bank_ktnr'] 		=  $_POST['bank_ktnr'];
 			$_SESSION['bank_sonstige'] 	=  $_POST['bank_sonstige'];
+			$_SESSION['bank_holder'] 	=  $_POST['bank_holder'];
+			$_SESSION['bank_iban'] 		=  $_POST['bank_iban'];
+			$_SESSION['bank_bic'] 		=  $_POST['bank_bic'];		
 			
 			$_SESSION['calcEinkommen']	= 	$_POST['calcEinkommen'];			
 			$_SESSION['verdienst']		= 	$_POST['verdienst'];			
@@ -57,9 +59,7 @@
 			$_SESSION['vermietung']		= 	$_POST['vermietung'];			
 			$_SESSION['werbungskosten']	= 	$_POST['werbungskosten'];	
 			$_SESSION['sonst_einkuenfte']= 	$_POST['sonst_einkuenfte'];	
-			
 		}
-	
 		
 		$sql = new Sql;
 		
@@ -102,7 +102,6 @@
 			$ende = $_POST['ende'];
 		}
 		
-		
 		//init der zeiten
 		$mo = (isset($_POST['day_mo']))? $_POST['time_h_mo'] . ":" . $_POST['time_m_mo'] : "0";
 		$di = (isset($_POST['day_di']))? $_POST['time_h_di'] . ":" . $_POST['time_m_di'] : "0";
@@ -141,7 +140,8 @@
 		//Zuschuss wird immer angenommen, Möglichkeit entfernt
 		$zuschuss_pdf = 0;
 		
-		$b_id = $sql->insertBank($_POST['bank_name'],$_POST['bank_blz'],$_POST['bank_ktnr'],$_POST['bank_vorname'],$_POST['bank_method'],$_POST['bank_sonstige']);
+		$b_id = $sql->insertBank($_POST['bank_name'],$_POST['bank_blz'],$_POST['bank_ktnr'],$_POST['bank_vorname'],$_POST['bank_method'], $_POST['bank_sonstige'], $_POST['bank_holder'], $_POST['bank_iban'], $_POST['bank_bic']);
+		
 		$sql->insertBetreuungsauftrag($s_id, $_SESSION['schul_id'], $anfang, $ende, $mo, $di, $mi, $do, $fr, $essen, $moslemisch, $_POST['allergie'], 
 							$allergien_text, $sozial, $jahreseinkommen, $ferien, $_POST['geschwister'], "$_POST[arzt]", "", $b_id, $status, $sozial_pdf, 
 							$zuschuss_pdf, $zuschuss_essen, $_POST['kinder'], $_POST['einkommens'], $_POST['verdienst'], $_POST['unterhalt'], $_POST['urlaubsgeld'], 
@@ -414,7 +414,9 @@
 		$bank_name 			= $_SESSION['bank_name']; 			
 		$bank_vorname 		= $_SESSION['bank_vorname'];
 		$bank_blz 			= $_SESSION['bank_blz']; 			
-		$bank_ktnr 			= $_SESSION['bank_ktnr']; 			
+		$bank_ktnr 			= $_SESSION['bank_ktnr'];
+		$bank_iban 			= $_SESSION['bank_iban']; 			
+		$bank_bic 			= $_SESSION['bank_bic']; 			
 		$bank_sonstige 		= $_SESSION['bank_sonstige'];	
 		
 		$calcEinkommen 		= 	$_SESSION['calcEinkommen'];			

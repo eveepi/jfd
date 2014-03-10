@@ -327,20 +327,19 @@
 					WHERE schueler.s_id = $id
 					";
 			if($this->debug)
-				echo $sql."<br/>";
+				echo "<pre>".$sql."</pre><br/>";
 			return mysql_fetch_object(mysql_query($sql));
 		}
 		
 		function getBaData($id){
-			$sql = "SELECT *
-					FROM schueler,  erziehungsberechtigte, betreuungsauftraege, aerzte, bankverbindungen
-					WHERE betreuungsauftraege.ba_id = $id
-					AND schueler.s_e_id = erziehungsberechtigte.e_id
-					AND betreuungsauftraege.ba_schueler_ID = schueler.s_id
-					AND betreuungsauftraege.ba_bankverbindungs_ID = bankverbindungen.b_id";
+			$sql = "SELECT * FROM betreuungsauftraege
+					INNER JOIN schueler ON betreuungsauftraege.ba_schueler_ID = schueler.s_id
+					INNER JOIN erziehungsberechtigte ON schueler.s_e_id = erziehungsberechtigte.e_id
+					INNER JOIN bankverbindungen ON betreuungsauftraege.ba_bankverbindungs_ID = bankverbindungen.b_id
+					WHERE betreuungsauftraege.ba_id = $id";
 			
 			if($this->debug)
-				echo $sql."<br/>";
+				echo "<pre>".$sql."</pre><br/>";
 			return mysql_fetch_object(mysql_query($sql));
 		}
 		
@@ -390,18 +389,20 @@
 			$this->insertLog("betreuungsauftraege", $id, $sql, $description);
 		}
 		
-		function insertBank($name, $blz, $ktnr, $vorname, $methode, $sonstiges){
-			$sql = "
-					INSERT INTO `bankverbindungen` (
+		function insertBank($name, $blz, $ktnr, $vorname, $methode, $sonstiges, $holder, $iban, $bic){
+			$sql = "INSERT INTO `bankverbindungen` (
 						`b_name` ,
 						`b_blz` ,
 						`b_kntr` ,
 						`b_vorname` ,
 						`b_methode` ,
-						`b_sonstiges`
+						`b_sonstiges`,
+						`b_holder`,
+						`b_iban`,
+						`b_bic`
 						)
 					VALUES (
-						'$name', '$blz', '$ktnr', '$vorname', '$methode', '$sonstiges'
+						'$name', '$blz', '$ktnr', '$vorname', '$methode', '$sonstiges', '$holder', '$iban', '$bic'
 					);
 					";
 			if($this->debug)
@@ -409,13 +410,13 @@
 		
 			mysql_query($sql);
 			
-			$b_id=$this->getLastId();
+			$b_id = $this->getLastId();
 			
-			$this->insertLog("bankverbindungen",$b_id,$sql);
+			$this->insertLog("bankverbindungen", $b_id, $sql);
 			return $b_id;
 		}
 
-		function updateBank($id="",$name="",$blz="",$ktnr="",$vorname="",$methode="",$sonstiges=""){
+		function updateBank($id, $name, $blz, $ktnr, $vorname, $methode, $sonstiges, $holder, $iban, $bic){
 			$sql = "
 					UPDATE `bankverbindungen` 
 					SET 
@@ -423,21 +424,23 @@
 					`b_blz` = '$blz',
 					`b_kntr` = '$ktnr',
 					`b_vorname` = '$vorname',
-
 					`b_methode` = '$methode',
 					`b_sonstiges` = '$sonstiges' 
-					WHERE `bankverbindungen`.`b_id` = $id
+					`b_holder` = '$holder',
+					`b_iban` = '$iban',
+					`b_bic` = '$bic'					
+					WHERE `b_id` = $id
 					";
 				
 			mysql_query($sql);
 			
-			$this->insertLog("bankverbindungen",$id,$sql);
+			$this->insertLog("bankverbindungen", $id, $sql);
 			
 			if($this->debug)
 				echo $sql."<br/>";
 		}
 		
-		function insertLog($table,$record_id,$query,$description=""){
+		function insertLog($table, $record_id, $query, $description=""){
 			$sql = "
 					INSERT INTO `log` (
 					`l_id` ,

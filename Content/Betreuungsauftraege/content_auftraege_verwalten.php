@@ -257,7 +257,7 @@
 							$_POST['kinder'], $_POST['einkommens'], $_POST['verdienst'], $_POST['unterhalt'], $_POST['urlaubsgeld'], 
 							$_POST['vermietung'], $_POST['werbungskosten'], $_POST['sonst_einkuenfte']);
 							
-			$sql->updateBank($_POST['bank_id'], $_POST['bank_name'], $_POST['bank_blz'], $_POST['bank_ktnr'], $_POST['bank_vorname'], $_POST['bank_method'], $_POST['bank_sonstige']);
+			$sql->updateBank($_POST['bank_id'], $_POST['bank_name'], $_POST['bank_blz'], $_POST['bank_ktnr'], $_POST['bank_vorname'], $_POST['bank_method'], $_POST['bank_sonstige'], $_POST['bank_holder'], $_POST['bank_iban'], $_POST['bank_bic']);
 			
 			echo "Änderung wurde gespeichert!<br/><br/>";
 			
@@ -272,7 +272,6 @@
 		$_GET['status'] = isset($_GET['status']) ? $_GET['status'] : 1;
 ?>
 
-		
 		<span>
 			<a href="<?php echo "index.php?content=".$self."&status=".$_GET['status']."&gueltigkeit=".$_GET['gueltigkeit'] ?>">Alle</a>&nbsp;
 			<?php
@@ -445,10 +444,7 @@
     echo "<input type='hidden' name='pageCount' id='pageCount' value='".$page."'";	
     } else {
 		echo "Es sind keine Einträge vorhanden";
-		
     }
-
-
 } elseif($page==md5('bearbeiten')) {
     
 		echo "<h2>Betreuungsauftrag bearbeiten (Schüler-ID: ".$row->ba_schueler_ID.")</h2>";
@@ -580,7 +576,7 @@
 				<br />	
 				<br />	
 				<label title="Der Vertrag kann auch ohne Verdienstnachweise gespeichert werden, ist dann aber noch nicht aktiv.">Verdienstnachweise sind als Kopie vorhanden, best&auml;tigt durch Aufsichtsperson</label>
-				<input type="checkbox" name="agb" id="agb" value="1" <? if($row->ba_status) echo 'checked="checked"';?>/>
+				<input type="checkbox" name="agb" id="agb" value="1" <?php if($row->ba_status) echo 'checked="checked"';?>/>
 			</fieldset>
 			<h3>Geschwister mit Betreungsauftrag</h3>
 			<fieldset>
@@ -599,7 +595,7 @@
 			<fieldset>
 				<label for="" >Anfang:</label>
 				<?php
-					$tmp = explode("-",$row->ba_anfang);
+					$tmp = explode("-", $row->ba_anfang);
 					$anfang = $tmp[2]."/".$tmp[1]."/".$tmp[0];
 				?>
 				
@@ -692,7 +688,7 @@
 			<h3>Zahlungsform</h3>
 			<fieldset>
 				<?php
-					echo getBank($row->b_methode,  $row->b_name,   $row->b_vorname,   $row->b_blz,  $row->b_kntr ,  $row->b_sonstiges );
+					echo getBank($row->b_methode, $row->b_name, $row->b_vorname, $row->b_blz, $row->b_kntr, $row->b_sonstiges, $row->b_holder, $row->b_iban, $row->b_bic);
 				?>
 			</fieldset>
 			<br />

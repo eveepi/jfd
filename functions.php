@@ -179,20 +179,25 @@ function getTimeBox($h,$m,$s = "", $onchange = ""){
 	return $html;
 }
 
-function getTimeBoxY($pre,$s = ""){
-	
+function getTimeBoxY($pre, $actdate = ""){
 	if(date("M") < 8){
-		$now = date("Y");
+		$now = date("Y")-1;
+		if($actdate == "")
+			$actdate = (date("Y")+1)."-07-31";		
 	}else {
-		$now = date("Y") + 1;
+		$now = date("Y");
+		if($actdate == "")
+			$actdate = (date("Y")+2)."-07-31";	
 	}
-	$tmp = date("Y") + 5;
+
+	$tmp = date("Y");
+	//$tmp = date("Y") + 4; Verträge nur noch für ein Jahr
 	$html = '<select name="'.$pre.'">';
 	
-	for($i=0;$now <= $tmp ;$i++){
+	for($i=0; $now <= $tmp; $i++){
 		$next = $now + 1;
 		$html .= "<option value=\"$next-07-31\" ";
-		$html .= ($s == "$next-07-31")?'selected="selected"':"";
+		$html .= ($actdate == "$next-07-31")?'selected="selected"':"";
 		$html .= ">$now  / $next</option>";
 		$now++;
 	}
@@ -281,54 +286,87 @@ function getKlassenForm($input_klassen,$sel=""){
 	return $html;
 }
 
-function getBank($method="lastschrift", $name="", $vorname="", $blz="", $ktnr="" , $sonstige="" ,$input_method="bank_method", $input_name="bank_name", $input_vorname="bank_vorname", $input_blz="bank_blz", $input_ktnr="bank_ktnr", $input_sonstige="bank_sonstige"){
+function getBank($method="sepa", $name="", $vorname="", $blz="", $ktnr="", $sonstige="", $holder="", $iban="", $bic=""){
 	
 	if(isset($_SESSION['bank_method']) && $_SESSION['bank_method'] != ""){
-	
 		$name	 = 	$_SESSION['bank_name'];
 		$vorname = 	$_SESSION['bank_vorname'];
 		$blz 	 = 	$_SESSION['bank_blz'];
 		$ktnr 	 = 	$_SESSION['bank_ktnr'];
 		$sonstige = $_SESSION['bank_sonstige'];
 		$method = 	$_SESSION['bank_method'];
-		
-		
+		$holder  = 	$_SESSION['bank_holder'];
+		$iban 	 = 	$_SESSION['bank_iban'];
+		$bic 	 = 	$_SESSION['bank_bic'];
+				
 		$_SESSION['bank_method'] = ""; 		
 		$_SESSION['bank_name'] = ""; 			
 		$_SESSION['bank_vorname'] = "";
 		$_SESSION['bank_blz'] = ""; 			
-		$_SESSION['bank_ktnr'] = ""; 			
-		$_SESSION['bank_sonstige'] = "";		
+		$_SESSION['bank_ktnr'] = "";
+		$_SESSION['bank_sonstige'] = "";
+		$_SESSION['bank_holder'] = "";
+		$_SESSION['bank_iban'] = ""; 			
+		$_SESSION['bank_bic'] = "";				
 	}
 	
-	$html ='<input type="radio" name="'.$input_method.'" value="lastschrift" onclick="getBank(this.value)"';
-	if ($method == "lastschrift") { $html.='checked="checked"';}
-	$html.='/> Lastschrifteinzug
-			<input type="radio" name="'.$input_method.'" value="ueberweisung" onclick="getBank(this.value)"'; 
+	$html = "";
+	//Iban
+	$html .= '<input type="radio" name="bank_method" value="sepa" onclick="getBank(this.value)"'; 
+	if ($method == "sepa") { $html.='checked="checked"';}
+	$html .= '/> Sepa-Lastschrift';
+		
+	//Lastschrift
+	if ($method == "lastschrift") {
+		$html .= '<input type="radio" name="bank_method" value="lastschrift" onclick="getBank(this.value)" checked="checked" /> Lastschrifteinzug';
+	}
+	
+	//Überweisung
+	$html .= '<input type="radio" name="bank_method" value="ueberweisung" onclick="getBank(this.value)"'; 
 	if ($method == "ueberweisung") { $html.='checked="checked"';}
-	$html.='/> &Uuml;berweisung
-			<input type="radio" name="'.$input_method.'" value="sonstige" onclick="getBank(this.value)"'; 
+	$html .= '/> &Uuml;berweisung';
+	
+	//Sonstiges
+	$html.= '<input type="radio" name="bank_method" value="sonstige" onclick="getBank(this.value)"'; 
 	if ($method == "sonstige") { $html.='checked="checked"';}
-	$html.='/> individuelle L&ouml;sung<br/> <br/> 
-			<div id="lastschrift" ';
+	$html.= '/> individuelle L&ouml;sung<br/> <br/>';
+
+	$html.= '<div id="sepa" ';
+	if ($method != "sepa") { $html.='class="hidden"'; }
+	$html.='>
+				<label for="bank_holder" >Inhaber:</label>
+				<input maxlength="50" type="text" name="bank_holder" id="bank_holder" value="'.$holder.'"/>
+				<br /> 
+				
+				<label for="bank_iban" >IBAN:</label>
+				<input maxlength="50" type="text" name="bank_iban" id="bank_iban" value="'.$iban.'"/>
+				<br /> 
+				
+				<label for="bank_bic" >BIC:</label>
+				<input maxlength="50" type="text" name="bank_bic" id="bank_bic" value="'.$bic.'"/>
+				<br /> 
+			</div>';
+	
+	$html.= '<div id="lastschrift" ';
 	if ($method != "lastschrift") { $html.='class="hidden"'; }
 	$html.='>
-				<label for="'.$input_name.'" >Name:</label>
-				<input maxlength="50" type="text" name="'.$input_name.'" id="'.$input_name.'" value="'.$name.'"/>
+				<label for="bank_name" >Name:</label>
+				<input maxlength="50" type="text" name="bank_name" id="bank_name" value="'.$name.'"/>
 				<br /> 
 				
-				<label for="'.$input_vorname.'" >Vorname:</label>
-				<input maxlength="50" type="text" name="'.$input_vorname.'" id="'.$input_vorname.'" value="'.$vorname.'"/>
+				<label for="bank_vorname" >Vorname:</label>
+				<input maxlength="50" type="text" name="bank_vorname" id="bank_vorname" value="'.$vorname.'"/>
 				<br /> 
 				
-				<label for="'.$input_blz.'" >Blz:</label>
-				<input maxlength="50" type="text" name="'.$input_blz.'" id="'.$input_blz.'" value="'.$blz.'"/>
+				<label for="bank_blz" >Blz:</label>
+				<input maxlength="50" type="text" name="bank_blz" id="bank_blz" value="'.$blz.'"/>
 				<br /> 
 				
-				<label for="'.$input_ktnr.'" >Kontonummer:</label>
-				<input maxlength="50" type="text" name="'.$input_ktnr.'" id="'.$input_ktnr.'" value="'.$ktnr.'"/>
+				<label for="bank_ktnr" >Kontonummer:</label>
+				<input maxlength="50" type="text" name="bank_ktnr" id="bank_ktnr" value="'.$ktnr.'"/>
 				<br /> 
 			</div>
+			
 			<div id="ueberweisung" ';
 	if ($method != "ueberweisung") { $html.='class="hidden"'; }
 	$html.='>
@@ -337,8 +375,8 @@ function getBank($method="lastschrift", $name="", $vorname="", $blz="", $ktnr=""
 			<div id="sonstige" ';
 	if ($method != "sonstige") { $html.='class="hidden"'; }
 	$html.='>
-				<label for="'.$input_sonstige.'" >Begr&uuml;ndung:</label>
-				<textarea rows="5" name="'.$input_sonstige.'" id="'.$input_sonstige.'" >'.$sonstige.'</textarea>				
+				<label for="bank_sonstiges" >Begr&uuml;ndung:</label>
+				<textarea rows="5" name="bank_sonstiges" id="bank_sonstiges" >'.$sonstige.'</textarea>				
 				<br /> 
 			</div>	
 	';

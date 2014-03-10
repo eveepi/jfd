@@ -185,6 +185,9 @@
 	$tbl_bankverbindungen['ktnr'] 						= "b_kntr";
 	$tbl_bankverbindungen['methode'] 					= "b_methode ";
 	$tbl_bankverbindungen['sonstiges'] 					= "b_sonstiges";
+	$tbl_bankverbindungen['holder'] 					= "b_holder";
+	$tbl_bankverbindungen['iban'] 						= "b_iban";
+	$tbl_bankverbindungen['bic'] 						= "b_bic";			
 	$tbl_bankverbindungen['schul_id'] 					= "b_schul_id";
 	
 	//log

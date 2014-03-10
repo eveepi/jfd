@@ -22,44 +22,79 @@
     
 	if($_GET['b']=="lastschrift"){		  
 		    
-		    $sql ="SELECT * FROM $tbl_bankverbindungen[tbl], $tbl_betreuungsauftraege[tbl], $tbl_schueler[tbl] 
-				   WHERE $tbl_bankverbindungen[methode] = 'lastschrift'
-				   AND $tbl_betreuungsauftraege[schul_id]  = $_SESSION[schul_id]
-				   AND $tbl_bankverbindungen[id] = $tbl_betreuungsauftraege[bankverbindungs_id]
-				   AND $tbl_schueler[id] = $tbl_betreuungsauftraege[schueler_id]";
-			$result = mysql_query($sql);
+	    $sql ="SELECT * FROM $tbl_bankverbindungen[tbl], $tbl_betreuungsauftraege[tbl], $tbl_schueler[tbl] 
+			   WHERE $tbl_bankverbindungen[methode] = 'lastschrift'
+			   AND $tbl_betreuungsauftraege[schul_id]  = $_SESSION[schul_id]
+			   AND $tbl_bankverbindungen[id] = $tbl_betreuungsauftraege[bankverbindungs_id]
+			   AND $tbl_schueler[id] = $tbl_betreuungsauftraege[schueler_id]";
+		$result = mysql_query($sql);
+	
+		if($row = mysql_fetch_assoc($result)){
+			echo "
+			<table cellpadding='5' cellspacing='0'>
+				<tr>
+					<th>Vorname</th>
+					<th>Nachname</th>
+					<th>Kontonummer</th>
+					<th>Bankleitzahl</th>
+				</tr>";			
+			
+		$i = 0;
+		do{
+			$i = ($i - 1) * ($i - 1);
+			echo "<tr class=\"row".$i."\">";
+			echo "  <td>".$row[$tbl_bankverbindungen['name']]."</td>";
+			echo "  <td>".$row[$tbl_bankverbindungen['vorname']]."</td>";
+			echo "  <td>".$row[$tbl_bankverbindungen['ktnr']]."</td>";
+			echo "  <td>".$row[$tbl_bankverbindungen['blz']]."</td>";
+			echo "</tr>";
+			
+		}while($row = mysql_fetch_assoc($result));
 		
-			if($row = mysql_fetch_assoc($result)){
-				echo "
-				<table cellpadding='5' cellspacing='0'>
-					<tr>
-						<th>Vorname</th>
-						<th>Nachname</th>
-						<th>Kontonummer</th>
-						<th>Bankleitzahl</th>
-					</tr>";			
-				
-			$i = 0;
-			do{
-				$i = ($i - 1) * ($i - 1);
-				echo "<tr class=\"row".$i."\">";
-				echo "  <td>".$row[$tbl_bankverbindungen['name']]."</td>";
-				echo "  <td>".$row[$tbl_bankverbindungen['vorname']]."</td>";
-				echo "  <td>".$row[$tbl_bankverbindungen['ktnr']]."</td>";
-				echo "  <td>".$row[$tbl_bankverbindungen['blz']]."</td>";
-				echo "</tr>";
-				
-			}while($row = mysql_fetch_assoc($result));
-			
-			echo "</table><br/>";
-			
-			echo "<a class='button' href='index.php?content=bankverbindungen_get&p=".md5('exportieren')."&b=".$_GET['b']."' target='_blank' >Exportieren</a> ";
-			
-			}else {
-				echo "Keine Datensätze vorhanden.";
-			}
+		echo "</table><br/>";
+		
+		echo "<a class='button' href='index.php?content=bankverbindungen_get&p=".md5('exportieren')."&b=".$_GET['b']."' target='_blank' >Exportieren</a> ";
+		
+		}else {
+			echo "Keine Datensätze vorhanden.";
+		}
+	}elseif($_GET['b']=="sepa"){		  
 		    
-		} elseif ($_GET['b']=="ueberweisung"){
+	    $sql ="SELECT * FROM $tbl_bankverbindungen[tbl], $tbl_betreuungsauftraege[tbl], $tbl_schueler[tbl] 
+			   WHERE $tbl_bankverbindungen[methode] = 'sepa'
+			   AND $tbl_betreuungsauftraege[schul_id]  = $_SESSION[schul_id]
+			   AND $tbl_bankverbindungen[id] = $tbl_betreuungsauftraege[bankverbindungs_id]
+			   AND $tbl_schueler[id] = $tbl_betreuungsauftraege[schueler_id]";
+		$result = mysql_query($sql);
+	
+		if($row = mysql_fetch_assoc($result)){
+			echo "
+			<table cellpadding='5' cellspacing='0'>
+				<tr>
+					<th>Inhaber</th>
+					<th>Kontonummer</th>
+					<th>Bankleitzahl</th>
+				</tr>";			
+			
+		$i = 0;
+		do{
+			$i = ($i - 1) * ($i - 1);
+			echo "<tr class=\"row".$i."\">";
+			echo "  <td>".$row[$tbl_bankverbindungen['holder']]."</td>";
+			echo "  <td>".$row[$tbl_bankverbindungen['iban']]."</td>";
+			echo "  <td>".$row[$tbl_bankverbindungen['bic']]."</td>";
+			echo "</tr>";
+			
+		}while($row = mysql_fetch_assoc($result));
+		
+		echo "</table><br/>";
+		
+		echo "<a class='button' href='index.php?content=bankverbindungen_get&p=".md5('exportieren')."&b=".$_GET['b']."' target='_blank' >Exportieren</a> ";
+		
+		}else {
+			echo "Keine Datensätze vorhanden.";
+		}
+	} elseif ($_GET['b']=="ueberweisung"){
 		    
 		    $sql ="SELECT * FROM $tbl_bankverbindungen[tbl], $tbl_betreuungsauftraege[tbl], $tbl_schueler[tbl]
 				   WHERE $tbl_bankverbindungen[methode] = 'ueberweisung'
