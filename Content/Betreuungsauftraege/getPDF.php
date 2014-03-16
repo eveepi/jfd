@@ -794,8 +794,9 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 		$pdf->Cell(50,10,'Schule:',0,0,'L');
 		$pdf->Cell(155,10,utf8_decode($school->schul_name) ,0,0,'L');
 		
-		$pdf->Cell(50,10,'Schüler-Nr:',0,0,'L');
-		$pdf->Cell(155,10,'KIJU-'.$school->schul_kuerzel.'-'.$data->s_id,0,0,'L');
+		$pdf->Ln(5);
+		$pdf->Cell(50,10,'KIJU-Nr:',0,0,'L');
+		$pdf->Cell(155,10,'KIJU-'.$school->schul_kuerzel.'-'.$data->s_id,0,0,'L');			
 		
 		$pdf->Ln(20);
 		
@@ -882,10 +883,15 @@ Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des
 			$pdf->Cell(50,10,'Klasse:',0,0,'L');
 			$pdf->Cell(155,10,utf8_decode($data->k_bezeichnung),0,0,'L'); // 
 		}
-		
+	
 		$pdf->Ln(5);
 		$pdf->Cell(50,10,'Schule:',0,0,'L');
 		$pdf->Cell(155,10,utf8_decode($school->schul_name),0,0,'L'); 
+		
+		$pdf->Ln(5);
+		$pdf->Cell(50,10,'KIJU-Nr:',0,0,'L');
+		$pdf->Cell(155,10,'KIJU-'.$school->schul_kuerzel.'-'.$data->s_id,0,0,'L');	
+					
 		$pdf->Ln(20);
 		
 		$pdf->MultiCell(155,

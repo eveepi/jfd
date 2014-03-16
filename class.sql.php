@@ -425,7 +425,7 @@
 					`b_kntr` = '$ktnr',
 					`b_vorname` = '$vorname',
 					`b_methode` = '$methode',
-					`b_sonstiges` = '$sonstiges' 
+					`b_sonstiges` = '$sonstiges',
 					`b_holder` = '$holder',
 					`b_iban` = '$iban',
 					`b_bic` = '$bic'					
