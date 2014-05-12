@@ -364,7 +364,7 @@
 	//$pdf->Ln(10);
 	$pdf->Cell(180,5,'Informationen zum Datenschutz',0,0,'L');
 	$pdf->Ln(10);
-	$pdf->MultiCell(180,4,"Zur Sicherstellung eines reibungslosen Geschäftsablaufes speichern wir die von uns erhobenen Daten und verarbeiten diese weiter, wir erhalten öffentliche Fördermittel. Zur Erlangung der Fördermittel geben wir Ihre Daten im Rahmen der einschlägigen Richtlinien teilweise an die jeweiligen Fördermittelgeber weiter. 
+	$pdf->MultiCell(180,4,"Ich willige ein, dass im Rahmen einer multiprofessionellen Zusammenarbeit mit allen Kräften der Schule ein pädagogischer Austausch stattfindet. Zur Sicherstellung eines reibungslosen Geschäftsablaufes speichern wir die von uns erhobenen Daten und verarbeiten diese weiter, wir erhalten öffentliche Fördermittel. Zur Erlangung der Fördermittel geben wir Ihre Daten im Rahmen der einschlägigen Richtlinien teilweise an die jeweiligen Fördermittelgeber weiter. 
 Darüber hinaus werden Fotos, Zeichnungen und Texte mit Nennung des Vornamens des/der Kindes/r in unserer Festschrift, in Büchern, Fachzeitschriften, Rundfunk, Fernsehen und vor allem im Internet oder mittels CD-ROM-Datenträgern veröffentlicht.",0,'L');
 	$pdf->Ln(10);
 	
