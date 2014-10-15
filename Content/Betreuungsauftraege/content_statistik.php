@@ -30,10 +30,16 @@
 			<label>Alle Schulen exportieren:</label>
 			<input type="checkbox" name="all_schools" value="1"/>
 			<br/>
+
+			<label>Nur aktuelle Verträge:</label>
+			<input type="checkbox" name="actonly" value="1" checked="checked"/>
+			<br/>
 			
 			<label>Meal-O Export:</label>
 			<input type="checkbox" name="mealo" value="1"/>
-			<br/>			
+			<br/>	
+			
+					
 			<?php
 		}
 		

@@ -50,6 +50,12 @@
     $all_schools = (isset($_POST['all_schools']) && checkRights(200, $user, 1)) ? $_POST['all_schools'] : 0;
     $mealo = (isset($_POST['mealo']) && checkRights(200, $user, 1)) ? $_POST['mealo'] : 0;
     
+    if(isset($_POST['actonly'])){
+    	$actOnlyQuery = " AND ba_anfang <= CURRENT_DATE()
+						  AND ba_ende >= CURRENT_DATE()";
+    } else {
+    	$actOnlyQuery = '';
+    }
     
     $page = isset($_GET['p']) ? $_GET['p'] : md5('get');
 	$self = 'statistik_get';
@@ -89,6 +95,7 @@
 					AND ba_anfang < '$end'
 					AND ba_ende > '$begin'
 					AND ba_status = 1
+					$actOnlyQuery
 				ORDER BY s_name, s_vorname";
 				
 		$result = mysql_query($sql);
